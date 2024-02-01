@@ -1,23 +1,19 @@
-import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from lotify.client import Client
 import uuid
-from dotenv import load_dotenv
+
 from pydantic import BaseModel
 from .models import db
 
 app = FastAPI()
 
-load_dotenv()
 
+CLIENT_ID = "6ImFrDXtdLOwlQDWK5VYcF"
+SECRET = "FmO9AZeE1c1XuMM9FzcNfpFflg2zdmL1DhhO5JzRJit"
+URI = "https://next-python-iot.vercel.app/api/callback"
 
-client_id = os.getenv("CLIENT_ID")
-secret = os.getenv("SECRET")
-uri = os.getenv("URI")
-
-
-lotify = Client(client_id=client_id, client_secret=secret, redirect_uri=uri)
+lotify = Client(client_id=CLIENT_ID, client_secret=SECRET, redirect_uri=URI)
 
 
 class Send(BaseModel):

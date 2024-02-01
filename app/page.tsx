@@ -1,116 +1,141 @@
-import Image from "next/image";
-import Link from "next/link";
+'use client'
+import { useEffect, useState } from "react";
+
+interface UserData {
+  _id: string;
+  name: string;
+}
+
+interface Send {
+  token: string;
+  message: string;
+}
+
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <Link href="/api/python">
-            <code className="font-mono font-bold">api/index.py</code>
-          </Link>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [userList, setUserList] = useState<UserData[]>();
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  let first = true;
+  useEffect(() => {
+    if (first) handleClick();
+    first = false;
+  }, [])
+
+
+  const handleClick = async () => {
+    try {
+      const res = await fetch('/api/findall');
+      const data: UserData[] = await res.json();
+      console.log(data);
+
+      setUserList(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const api = async (href: string, message: Send) => {
+    try {
+      const response = await fetch(href, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('post successfully:', data);
+        handleClick();
+      } else {
+        console.error('Failed to create user:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+  };
+  const CopyToClipboardButton: React.FC<{ text: string }> = ({ text }) => {
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopyClick = async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        setIsCopied(true);
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+      }
+    };
+
+    return (
+      <button
+        onClick={handleCopyClick}
+        className={`btn ${isCopied ? 'btn-success' : 'btn-primary'}`}
+      >
+        {isCopied ? 'Copied!' : 'Copy'}
+      </button>
+    );
+  };
+
+  const Token: React.FC<{ user: UserData }> = ({ user }) => {
+    const [text, setText] = useState("test");
+    const [name, setName] = useState(user.name);
+    const [edit, setEdit] = useState(false);
+
+    return <div className="bg-slate-300 flex items-center justify-between rounded-xl p-4 shadow-md shadow-red-700">
+      <div className="flex items-center space-x-2">
+        <button className="btn btn-sm btn-outline bg-slate-200 transform transition-transform duration-300 hover:scale-110" onClick={async () => {
+          if (edit) {
+            await api('/api/rename', { token: user._id, message: name });
+          } setEdit(!edit);
+        }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+          </svg>
+        </button>
+        {edit ?
+          <input type="text" placeholder="Type here" className="input input-bordered input-primary lg:w-full w-20 bg-slate-200 text-black placeholder:text-black"
+            value={name} // 設置 input 的值
+            onChange={(e) => setName(e.target.value)} // 監聽輸入變化
+          />
+          : <div className="text-lg font-semibold">{name}</div>
+        }
+        {/* <div>{token}</div> */}
+      </div>
+      <div className=" space-x-4 flex flex-row items-center p-2">
+        <CopyToClipboardButton text={user._id} />
+        <input type="text" placeholder="Type here" className="input input-bordered input-primary lg:w-full w-20 bg-slate-200 text-black placeholder:text-black"
+          value={text} // 設置 input 的值
+          onChange={(e) => setText(e.target.value)} // 監聽輸入變化
         />
+        <button className="btn btn-info btn-circle transform transition-transform duration-300 hover:scale-110" onClick={() => api('/api/send', { token: user._id, message: text })}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" >
+            <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393" />
+          </svg>
+        </button>
+        <button className="btn btn-circle btn-error transform transition-transform duration-300 hover:scale-110" onClick={() => api('/api/delete', { token: user._id, message: "" })}>X</button>
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    </div >
+  }
+  const TokenTable: React.FC = () => {
+    return (
+      <div className="space-y-4 bg-orange-500 p-8 shadow-md rounded-md text-black">
+        {userList?.map((user, index) => (<Token key={index} user={user} />))}
+      </div >
+    );
+  };
+  return (
+    <>
+      <div className="flex border-white">
+        <div className="p-20 mx-auto lg:w-4/5 space-y-10">
+          <button className="btn btn-success" onClick={async () => {
+            const response = await fetch('/api/linelink');
+            const data = await response.json();
+            window.location.href = data;
+          }}>line link</button>
+          <TokenTable />
+        </div>
+      </div >
+    </>
+  )
 }

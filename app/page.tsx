@@ -1,4 +1,5 @@
 'use client'
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface UserData {
@@ -14,14 +15,28 @@ interface Send {
 
 export default function Home() {
   const [userList, setUserList] = useState<UserData[]>();
+  const [linelink, setLinelink] = useState<string>("");
+
 
   let first = true;
   useEffect(() => {
-    if (first) handleClick();
+    if (first) {
+      handleClick();
+      getlinelink();
+    }
     first = false;
   }, [])
 
-
+  const getlinelink = async () => {
+    try {
+      const res = await fetch('/api/linelink');
+      const data: string = await res.json();
+      console.log(data);
+      setLinelink(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const handleClick = async () => {
     try {
       const res = await fetch('/api/findall');
@@ -128,11 +143,7 @@ export default function Home() {
     <>
       <div className="flex border-white">
         <div className="p-20 mx-auto lg:w-4/5 space-y-10">
-          <button className="btn btn-success" onClick={async () => {
-            const response = await fetch('/api/linelink');
-            const data = await response.json();
-            window.location.href = data;
-          }}>line link</button>
+          <Link className="btn btn-success" href={linelink}>line link</Link>
           <TokenTable />
         </div>
       </div >

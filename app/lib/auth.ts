@@ -2,10 +2,10 @@ import { redirect } from 'next/navigation'
 import { getToken } from './cookie';
 import { API_URL } from '@/config';
 
-export default async () => {
+const auth = async () => {
 
     try {
-        const token = getToken();        
+        const token = getToken();
         if (!token) {
             return redirect('/login') // Navigate to the new post page
         }
@@ -24,3 +24,4 @@ export default async () => {
         return redirect('/login') // Navigate to the new post page
     }
 }
+export default auth;

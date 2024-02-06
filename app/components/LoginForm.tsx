@@ -16,7 +16,7 @@ export interface Token {
 
 
 
-export default () => {
+const LoginForm = () => {
     const [username, setUsername] = useState("s");
     const [password, setPassword] = useState("s");
 
@@ -81,3 +81,4 @@ export default () => {
         </div>
     )
 }
+export default LoginForm;

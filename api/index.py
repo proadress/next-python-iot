@@ -1,7 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, FastAPI
-from .models import db
-from .auth import User, auth, get_current_user
+from .auth import  auth, get_current_user
 from .api import api
 
 app = FastAPI()

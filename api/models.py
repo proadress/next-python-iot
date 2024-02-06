@@ -20,3 +20,8 @@ db = MongoServer(
     dbname="iot",
     dbcoll="tokens",
 )
+userdb = MongoServer(
+    url="mongodb+srv://yc359032:jYW7xwHcvGiQDqCp@cluster0.8lnefaq.mongodb.net/?retryWrites=true&w=majority",
+    dbname="iot",
+    dbcoll="users",
+)

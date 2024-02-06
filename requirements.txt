@@ -2,3 +2,6 @@ fastapi
 uvicorn
 lotify
 pymongo
+python-jose
+passlib
+python-multipart

@@ -12,7 +12,7 @@ api = APIRouter(prefix="/api", tags=["api"])
 
 CLIENT_ID = "6ImFrDXtdLOwlQDWK5VYcF"
 SECRET = "FmO9AZeE1c1XuMM9FzcNfpFflg2zdmL1DhhO5JzRJit"
-URI = "https://next-python-iot.vercel.api/api/callback"
+URI = "https://next-python-iot.vercel.app/api/callback"
 # URI = "http://localhost:3000/api/callback"
 
 
@@ -29,6 +29,7 @@ tokenData = Send(token="", message="")
 @api.get("/linelink")
 async def linelink():
     link = lotify.get_auth_link(state=uuid.uuid4())
+    print(link)
     return link
 
 

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { serverGetToken } from './app/lib/cookie';
+import { getToken } from './app/lib/cookie';
 
 export async function middleware(req: NextRequest) {
-  const token = serverGetToken();
+  const token = getToken();
 
   if (token) {
     const res = await fetch(`${process.env.API_URL}/api/auth/user`, {

@@ -5,7 +5,7 @@ import { getToken } from './app/lib/cookie';
 export default async function middleware(request: NextRequest) {
   const token = getToken();
   console.log(process.env.API_URL);
-  return NextResponse.json(process.env.API_URL);
+  // return NextResponse.json(process.env.API_URL);
 
   if (token) {
     const res = await fetch(`${process.env.API_URL}/api/auth/user`, {

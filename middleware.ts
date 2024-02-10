@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from './app/lib/cookie';
 
-export async function middleware(req: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = getToken();
 
   if (token) {
@@ -13,10 +13,10 @@ export async function middleware(req: NextRequest) {
       }
     })
     if (!res.ok) {
-      return NextResponse.redirect('/login')
+      return NextResponse.redirect(new URL('/login', request.url))
     }
   } else {
-    return NextResponse.redirect('/login')
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 }
 //protected

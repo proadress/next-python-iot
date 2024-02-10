@@ -50,7 +50,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user_data["_id"]
 
 
-@auth.post("/token")
+@auth.post("/login")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):

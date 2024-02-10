@@ -1,13 +1,11 @@
-import auth from "@/app/lib/auth"
 import Logout from "./components/Logout";
 import { UserData } from "./lib/model";
 import React from "react";
-import { API_URL } from "@/config";
 import TokenList from "./components/TokenList";
 
 const resetGet = async () => {
   try {
-    const res = await fetch(`${API_URL}/api/findall`);
+    const res = await fetch(`${process.env.API_URL}/api/findall`);
     const data: UserData[] = await res.json();
     return data
   } catch (error) {
@@ -16,7 +14,7 @@ const resetGet = async () => {
 };
 const getlinelink = async () => {
   try {
-    const res = await fetch(`${API_URL}/api/linelink`);
+    const res = await fetch(`${process.env.API_URL}/api/linelink`);
     const data: string = await res.json();
     return data
   } catch (error) {
@@ -26,7 +24,7 @@ const getlinelink = async () => {
 
 
 const Home = async () => {
-  const user = await auth();
+  // const user = await auth();
   const data = await resetGet();
   const lineLink = await getlinelink();
   if (!data || !lineLink) {
@@ -36,7 +34,7 @@ const Home = async () => {
     <div>
       <Logout />
       <div>
-        {user}
+        {/* {user} */}
       </div>
       <TokenList inputdata={data} lineLink={lineLink} />
     </div>

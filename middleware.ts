@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   const token = getToken();
 
   if (token) {
-    const res = await fetch(`${process.env.API_URL}/api/auth/user`, {
+    const res = await fetch(`${process.env.VERCEL_URL}/api/auth/user`, {
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + token

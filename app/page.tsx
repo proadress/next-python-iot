@@ -5,7 +5,7 @@ import TokenList from "./components/TokenList";
 
 const resetGet = async () => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/findall`);
+    const res = await fetch(`${process.env.VERCEL_URL}/api/findall`);
     const data: UserData[] = await res.json();
     return data
   } catch (error) {
@@ -14,7 +14,7 @@ const resetGet = async () => {
 };
 const getlinelink = async () => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/linelink`);
+    const res = await fetch(`${process.env.VERCEL_URL}/api/linelink`);
     const data: string = await res.json();
     return data
   } catch (error) {

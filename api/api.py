@@ -76,7 +76,9 @@ def send(item: Send):
 
 @api.post("/rename")
 def rename(item: Send):
-    respond = db.collection.replace_one({"_id": item.token}, {"name": item.message})
+    respond = db.collection.update_one(
+        {"_id": item.token}, {"$set": {"name": item.message}}
+    )
     print(respond)
     return JSONResponse(content={"status": "success"}, status_code=200)
 

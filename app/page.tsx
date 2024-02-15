@@ -5,7 +5,7 @@ import TokenList from "./components/TokenList";
 
 const resetGet = async () => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/findall`);
+    const res = await fetch(`${process.env.API_URL}/api/findall`, { cache: 'no-store' });
     const data: UserData[] = await res.json();
     return data
   } catch (error) {

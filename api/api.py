@@ -23,6 +23,7 @@ class Send(BaseModel):
     token: str
     message: str
 
+
 tokenData = Send(token="", message="")
 
 
@@ -31,8 +32,6 @@ async def linelink():
     link = lotify.get_auth_link(state=uuid.uuid4())
     print(link)
     return link
-
-
 
 
 @api.post("/data")

@@ -2,10 +2,26 @@ import Logout from "./components/Logout";
 import { UserData } from "./lib/model";
 import React from "react";
 import TokenList from "./components/TokenList";
+import { getToken } from "./lib/cookie";
 
+
+
+const auth = async () => {
+  try {
+    const res = await fetch(`${process.env.API_URL}/api/auth/user`, {
+      headers: { "Authorization": "Bearer " + getToken() }
+    });
+    const data: string = await res.json();
+    return data
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
 const resetGet = async () => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/findall`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/findall`, {
+      headers: { "Authorization": "Bearer " + getToken() }, cache: "no-store"
+    });
     const data: UserData[] = await res.json();
     return data
   } catch (error) {
@@ -24,7 +40,7 @@ const getlinelink = async () => {
 
 
 const Home = async () => {
-  // const user = await auth();
+  const user = await auth();
   const data = await resetGet();
   const lineLink = await getlinelink();
   if (!data || !lineLink) {
@@ -33,9 +49,7 @@ const Home = async () => {
   return (
     <div>
       <Logout />
-      <div>
-        {/* {user} */}
-      </div>
+      {user}
       <TokenList inputdata={data} lineLink={lineLink} />
     </div>
   )

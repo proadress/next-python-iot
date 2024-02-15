@@ -102,7 +102,7 @@ const TokenList: React.FC<{ inputdata: UserData[], lineLink: string }> = ({ inpu
                             "Authorization": "Bearer " + getCookie("token")
                         }
                     })
-                    const json = await res.json()
+                    const json: string = await res.json();
                     api('/api/data', { token: "未命名", message: json });
                 }} href={lineLink}> line link</Link>
                 {data.map((user, index) => (<Token key={index} user={user} />))}

@@ -1,9 +1,12 @@
 from contextlib import asynccontextmanager
-from fastapi import APIRouter, Request
+from typing import Annotated
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from lotify.client import Client
 import uuid
 from pydantic import BaseModel
+
+from api.auth import get_current_user
 from .models import db
 
 
@@ -52,8 +55,8 @@ async def callback(request: Request, code: str):
 
 
 @api.get("/findall")
-async def findall():
-    data = db.collection.find()
+async def findall(current_user: Annotated[str, Depends(get_current_user)]):
+    data = db.collection.find({"user": current_user})
     data = [document for document in data]
     return JSONResponse(data)
 

@@ -4,7 +4,7 @@ import TokenList from "./components/TokenList";
 
 const getlinelink = async () => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/linelink`);
+    const res = await fetch(`${process.env.API_URL}/api/linelink`, { cache: "no-store" });
     const data: string = await res.json();
     return data
   } catch (error) {

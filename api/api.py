@@ -1,11 +1,9 @@
-from contextlib import asynccontextmanager
 from typing import Annotated
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from lotify.client import Client
 import uuid
 from pydantic import BaseModel
-
 from api.auth import get_current_user
 from .models import db
 

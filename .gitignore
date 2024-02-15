@@ -40,4 +40,4 @@ next-env.d.ts
 
 .yarn
 
-/__pycache__
+/api/__pycache__

@@ -1,19 +1,35 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Send, UserData } from "../lib/model";
 import Link from "next/link";
-import { getToken } from "../lib/cookie";
-import { getCookie, getCookies } from "cookies-next";
+import { getCookie } from "cookies-next";
 
 
-
-const TokenList: React.FC<{ inputdata: UserData[], lineLink: string }> = ({ inputdata, lineLink }) => {
-    const [data, setData] = useState(inputdata)
+const TokenList: React.FC<{ lineLink: string }> = ({ lineLink }) => {
+    const [data, setData] = useState<UserData[]>([]);
+    const [user, setUser] = useState("");
+    useEffect(() => {
+        GetUser();
+        reset();
+    }, []);
     const reset = async () => {
         try {
-            const res = await fetch(`/api/findall`);
+            const res = await fetch(`/api/findall`, {
+                headers: { "Authorization": "Bearer " + getCookie("token") }
+            });
             const data: UserData[] = await res.json();
             setData(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    const GetUser = async () => {
+        try {
+            const res = await fetch(`/api/auth/user`, {
+                headers: { "Authorization": "Bearer " + getCookie("token") }
+            });
+            const data: string = await res.json();
+            setUser(data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -95,15 +111,9 @@ const TokenList: React.FC<{ inputdata: UserData[], lineLink: string }> = ({ inpu
     return <div className="flex border-white">
         <div className="p-20 mx-auto lg:w-4/5 space-y-10">
             <div className="space-y-4 bg-orange-500 p-8 shadow-md rounded-md text-black">
+                <div className=" font-bold">User : {user}</div>
                 <Link className="btn btn-success" onClick={async () => {
-                    const res = await fetch(`/api/auth/user`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + getCookie("token")
-                        }
-                    })
-                    const json: string = await res.json();
-                    api('/api/data', { token: "未命名", message: json });
+                    api('/api/data', { token: "未命名", message: user });
                 }} href={lineLink}> line link</Link>
                 {data.map((user, index) => (<Token key={index} user={user} />))}
             </div >
